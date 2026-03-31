@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verify - Authentify</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at top left, #1f1c3a, #0f0c29);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .card {
+            width: 90%;
+            max-width: 350px;
+            padding: 30px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border: none;
+            background: rgba(255,255,255,0.08);
+            color: white;
+        }
+
+        select option {
+            color: black;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(to right, #6a5af9, #8b5cf6);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .file-upload {
+            display: block;
+            padding: 12px;
+            border-radius: 10px;
+            background: linear-gradient(to right, #6a5af9, #8b5cf6);
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        #fileName {
+            font-size: 12px;
+            color: #bbb;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+
+        .success {
+            background: rgba(0,255,150,0.2);
+            color: #00ff99;
+        }
+
+        .error {
+            background: rgba(255,0,0,0.2);
+            color: #ff4d4d;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+    <div class="logo">AUTHENTIFY</div>
+
+    <h3>Verify Document</h3>
+
+    <form id="verifyForm" enctype="multipart/form-data">
+
+        <input type="text" name="user_code" placeholder="Enter User Code" required>
+
+        <select id="docType" name="doc_type" required onchange="handleDocType()">
+            <option value="">Select Document</option>
+            <option value="Aadhaar">Aadhaar</option>
+            <option value="PAN">PAN</option>
+            <option value="Passport">Passport</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <input type="text" id="customDoc" placeholder="Enter Document Name" style="display:none;">
+
+        <label class="file-upload">
+            Choose File
+            <input type="file" name="file" required>
+        </label>
+
+        <p id="fileName"></p>
+
+        <button type="submit">Verify</button>
+    </form>
+
+    <div id="resultBox" class="result"></div>
+</div>
+
+<script>
+const fileInput = document.querySelector('input[type="file"]');
+const fileName = document.getElementById("fileName");
+
+fileInput.addEventListener("change", function(){
+    fileName.textContent = this.files[0].name;
+});
+
+function handleDocType() {
+    let dropdown = document.getElementById("docType");
+    let custom = document.getElementById("customDoc");
+
+    if (dropdown.value === "Other") {
+        custom.style.display = "block";
+        custom.required = true;
+    } else {
+        custom.style.display = "none";
+        custom.required = false;
+    }
+}
+
+document.getElementById("verifyForm").onsubmit = function(e){
+    e.preventDefault();
+
+    let formData = new FormData(this);
+
+    let dropdown = document.getElementById("docType").value;
+    let custom = document.getElementById("customDoc").value;
+
+    if(dropdown === "Other"){
+        formData.set("doc_type", custom);
+    }
+
+    fetch("backend/verify.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.text())
+    .then(data => {
+        let box = document.getElementById("resultBox");
+        box.style.display = "block";
+        box.innerText = data;
+
+        if(data.includes("Verified")){
+            box.className = "result success";
+        } else {
+            box.className = "result error";
+        }
+    });
+};
+</script>
+
+</body>
+</html>

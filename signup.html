@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Authentify Sign Up</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: radial-gradient(circle at top left, #1f1c3a, #0f0c29);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            flex-direction: column;
+        }
+
+        .card {
+            width: 90%;
+            max-width: 350px;
+            padding: 35px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+        }
+
+        .title {
+            font-size: 26px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 25px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border: none;
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+        }
+
+        input::placeholder {
+            color: #bbb;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(to right, #6a5af9, #8b5cf6);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .login-btn {
+            margin-top: 10px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .login-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+    <div class="logo">Authentify</div>
+
+    <div class="title">Create Account</div>
+    <div class="subtitle">Sign up to get started</div>
+
+    <form id="signupForm">
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+
+        <button type="submit">Sign Up</button>
+    </form>
+
+    <!-- BACK TO LOGIN -->
+    <button class="login-btn" onclick="window.location='login.html'">
+        Back to Login
+    </button>
+</div>
+
+<script>
+document.getElementById("signupForm").onsubmit = function(e){
+    e.preventDefault();
+
+    let formData = new FormData(this);
+
+    fetch("backend/signup.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.text())
+    .then(data => {
+        alert(data);
+
+        if(data.includes("Success")){
+            window.location = "login.html";
+        }
+    });
+};
+</script>
+
+</body>
+
+</html>
