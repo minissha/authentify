@@ -1,6 +1,6 @@
 # Authentify 🔐
 
-A secure document verification web application.
+A secure document management and verification web application.
 
 ## 🚀 Features
 - User login & signup
